@@ -13,11 +13,11 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QScrollArea>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
@@ -31,8 +31,13 @@ class Ui_MainWindow
 public:
     QWidget *centralwidget;
     QGridLayout *gridLayout;
-    QGroupBox *groupBox;
-    QVBoxLayout *verticalLayout;
+    QScrollArea *scrollArea;
+    QWidget *scrollAreaWidgetContents_2;
+    QVBoxLayout *verticalLayout_2;
+    QLabel *label_6;
+    QLabel *label_4;
+    QLabel *label_5;
+    QLabel *label_7;
     QCheckBox *editEmitter1CheckBox;
     QCheckBox *editEmitter2CheckBox;
     QCheckBox *editEmitter3CheckBox;
@@ -66,53 +71,87 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(1080, 720);
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
+        MainWindow->setSizePolicy(sizePolicy);
         MainWindow->setAnimated(true);
         MainWindow->setTabShape(QTabWidget::Triangular);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         gridLayout = new QGridLayout(centralwidget);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        groupBox = new QGroupBox(centralwidget);
-        groupBox->setObjectName(QString::fromUtf8("groupBox"));
-        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(groupBox->sizePolicy().hasHeightForWidth());
-        groupBox->setSizePolicy(sizePolicy);
-        verticalLayout = new QVBoxLayout(groupBox);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        editEmitter1CheckBox = new QCheckBox(groupBox);
+        scrollArea = new QScrollArea(centralwidget);
+        scrollArea->setObjectName(QString::fromUtf8("scrollArea"));
+        QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Expanding);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(scrollArea->sizePolicy().hasHeightForWidth());
+        scrollArea->setSizePolicy(sizePolicy1);
+        scrollArea->setFrameShape(QFrame::StyledPanel);
+        scrollArea->setFrameShadow(QFrame::Sunken);
+        scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        scrollArea->setWidgetResizable(true);
+        scrollArea->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
+        scrollAreaWidgetContents_2 = new QWidget();
+        scrollAreaWidgetContents_2->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_2"));
+        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 211, 806));
+        verticalLayout_2 = new QVBoxLayout(scrollAreaWidgetContents_2);
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        label_6 = new QLabel(scrollAreaWidgetContents_2);
+        label_6->setObjectName(QString::fromUtf8("label_6"));
+
+        verticalLayout_2->addWidget(label_6);
+
+        label_4 = new QLabel(scrollAreaWidgetContents_2);
+        label_4->setObjectName(QString::fromUtf8("label_4"));
+
+        verticalLayout_2->addWidget(label_4);
+
+        label_5 = new QLabel(scrollAreaWidgetContents_2);
+        label_5->setObjectName(QString::fromUtf8("label_5"));
+
+        verticalLayout_2->addWidget(label_5);
+
+        label_7 = new QLabel(scrollAreaWidgetContents_2);
+        label_7->setObjectName(QString::fromUtf8("label_7"));
+
+        verticalLayout_2->addWidget(label_7);
+
+        editEmitter1CheckBox = new QCheckBox(scrollAreaWidgetContents_2);
         editEmitter1CheckBox->setObjectName(QString::fromUtf8("editEmitter1CheckBox"));
         editEmitter1CheckBox->setChecked(true);
 
-        verticalLayout->addWidget(editEmitter1CheckBox);
+        verticalLayout_2->addWidget(editEmitter1CheckBox);
 
-        editEmitter2CheckBox = new QCheckBox(groupBox);
+        editEmitter2CheckBox = new QCheckBox(scrollAreaWidgetContents_2);
         editEmitter2CheckBox->setObjectName(QString::fromUtf8("editEmitter2CheckBox"));
 
-        verticalLayout->addWidget(editEmitter2CheckBox);
+        verticalLayout_2->addWidget(editEmitter2CheckBox);
 
-        editEmitter3CheckBox = new QCheckBox(groupBox);
+        editEmitter3CheckBox = new QCheckBox(scrollAreaWidgetContents_2);
         editEmitter3CheckBox->setObjectName(QString::fromUtf8("editEmitter3CheckBox"));
 
-        verticalLayout->addWidget(editEmitter3CheckBox);
+        verticalLayout_2->addWidget(editEmitter3CheckBox);
 
-        editEmitter4CheckBox = new QCheckBox(groupBox);
+        editEmitter4CheckBox = new QCheckBox(scrollAreaWidgetContents_2);
         editEmitter4CheckBox->setObjectName(QString::fromUtf8("editEmitter4CheckBox"));
 
-        verticalLayout->addWidget(editEmitter4CheckBox);
+        verticalLayout_2->addWidget(editEmitter4CheckBox);
 
-        label_21 = new QLabel(groupBox);
+        label_21 = new QLabel(scrollAreaWidgetContents_2);
         label_21->setObjectName(QString::fromUtf8("label_21"));
-        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Fixed);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(label_21->sizePolicy().hasHeightForWidth());
-        label_21->setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Fixed);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(label_21->sizePolicy().hasHeightForWidth());
+        label_21->setSizePolicy(sizePolicy2);
 
-        verticalLayout->addWidget(label_21);
+        verticalLayout_2->addWidget(label_21);
 
-        gravitySlider = new QSlider(groupBox);
+        gravitySlider = new QSlider(scrollAreaWidgetContents_2);
         gravitySlider->setObjectName(QString::fromUtf8("gravitySlider"));
         gravitySlider->setToolTipDuration(-1);
         gravitySlider->setAutoFillBackground(false);
@@ -120,37 +159,37 @@ public:
         gravitySlider->setValue(10);
         gravitySlider->setOrientation(Qt::Horizontal);
 
-        verticalLayout->addWidget(gravitySlider);
+        verticalLayout_2->addWidget(gravitySlider);
 
-        label_22 = new QLabel(groupBox);
+        label_22 = new QLabel(scrollAreaWidgetContents_2);
         label_22->setObjectName(QString::fromUtf8("label_22"));
-        sizePolicy1.setHeightForWidth(label_22->sizePolicy().hasHeightForWidth());
-        label_22->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(label_22->sizePolicy().hasHeightForWidth());
+        label_22->setSizePolicy(sizePolicy2);
 
-        verticalLayout->addWidget(label_22);
+        verticalLayout_2->addWidget(label_22);
 
-        numParticlesSlider = new QSlider(groupBox);
+        numParticlesSlider = new QSlider(scrollAreaWidgetContents_2);
         numParticlesSlider->setObjectName(QString::fromUtf8("numParticlesSlider"));
         numParticlesSlider->setMaximum(100000);
-        numParticlesSlider->setValue(5000);
+        numParticlesSlider->setValue(1000);
         numParticlesSlider->setOrientation(Qt::Horizontal);
 
-        verticalLayout->addWidget(numParticlesSlider);
+        verticalLayout_2->addWidget(numParticlesSlider);
 
-        label_23 = new QLabel(groupBox);
+        label_23 = new QLabel(scrollAreaWidgetContents_2);
         label_23->setObjectName(QString::fromUtf8("label_23"));
-        sizePolicy1.setHeightForWidth(label_23->sizePolicy().hasHeightForWidth());
-        label_23->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(label_23->sizePolicy().hasHeightForWidth());
+        label_23->setSizePolicy(sizePolicy2);
 
-        verticalLayout->addWidget(label_23);
+        verticalLayout_2->addWidget(label_23);
 
-        particleSizeSlider = new QSlider(groupBox);
+        particleSizeSlider = new QSlider(scrollAreaWidgetContents_2);
         particleSizeSlider->setObjectName(QString::fromUtf8("particleSizeSlider"));
-        QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(particleSizeSlider->sizePolicy().hasHeightForWidth());
-        particleSizeSlider->setSizePolicy(sizePolicy2);
+        QSizePolicy sizePolicy3(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(particleSizeSlider->sizePolicy().hasHeightForWidth());
+        particleSizeSlider->setSizePolicy(sizePolicy3);
         particleSizeSlider->setAutoFillBackground(false);
         particleSizeSlider->setMinimum(1);
         particleSizeSlider->setMaximum(50);
@@ -158,16 +197,16 @@ public:
         particleSizeSlider->setOrientation(Qt::Horizontal);
         particleSizeSlider->setTickPosition(QSlider::NoTicks);
 
-        verticalLayout->addWidget(particleSizeSlider);
+        verticalLayout_2->addWidget(particleSizeSlider);
 
-        label_24 = new QLabel(groupBox);
+        label_24 = new QLabel(scrollAreaWidgetContents_2);
         label_24->setObjectName(QString::fromUtf8("label_24"));
-        sizePolicy1.setHeightForWidth(label_24->sizePolicy().hasHeightForWidth());
-        label_24->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(label_24->sizePolicy().hasHeightForWidth());
+        label_24->setSizePolicy(sizePolicy2);
 
-        verticalLayout->addWidget(label_24);
+        verticalLayout_2->addWidget(label_24);
 
-        particleSpreadSlider = new QSlider(groupBox);
+        particleSpreadSlider = new QSlider(scrollAreaWidgetContents_2);
         particleSpreadSlider->setObjectName(QString::fromUtf8("particleSpreadSlider"));
         particleSpreadSlider->setMinimum(1);
         particleSpreadSlider->setMaximum(20);
@@ -175,89 +214,90 @@ public:
         particleSpreadSlider->setValue(2);
         particleSpreadSlider->setOrientation(Qt::Horizontal);
 
-        verticalLayout->addWidget(particleSpreadSlider);
+        verticalLayout_2->addWidget(particleSpreadSlider);
 
-        singleShotCheckBox = new QCheckBox(groupBox);
+        singleShotCheckBox = new QCheckBox(scrollAreaWidgetContents_2);
         singleShotCheckBox->setObjectName(QString::fromUtf8("singleShotCheckBox"));
 
-        verticalLayout->addWidget(singleShotCheckBox);
+        verticalLayout_2->addWidget(singleShotCheckBox);
 
-        addParticlesButton = new QPushButton(groupBox);
+        addParticlesButton = new QPushButton(scrollAreaWidgetContents_2);
         addParticlesButton->setObjectName(QString::fromUtf8("addParticlesButton"));
 
-        verticalLayout->addWidget(addParticlesButton);
+        verticalLayout_2->addWidget(addParticlesButton);
 
-        removeParticlesButton = new QPushButton(groupBox);
+        removeParticlesButton = new QPushButton(scrollAreaWidgetContents_2);
         removeParticlesButton->setObjectName(QString::fromUtf8("removeParticlesButton"));
 
-        verticalLayout->addWidget(removeParticlesButton);
+        verticalLayout_2->addWidget(removeParticlesButton);
 
-        clearParticlesButton = new QPushButton(groupBox);
+        clearParticlesButton = new QPushButton(scrollAreaWidgetContents_2);
         clearParticlesButton->setObjectName(QString::fromUtf8("clearParticlesButton"));
 
-        verticalLayout->addWidget(clearParticlesButton);
+        verticalLayout_2->addWidget(clearParticlesButton);
 
-        resetEmitterButton = new QPushButton(groupBox);
+        resetEmitterButton = new QPushButton(scrollAreaWidgetContents_2);
         resetEmitterButton->setObjectName(QString::fromUtf8("resetEmitterButton"));
 
-        verticalLayout->addWidget(resetEmitterButton);
+        verticalLayout_2->addWidget(resetEmitterButton);
 
-        label_25 = new QLabel(groupBox);
+        label_25 = new QLabel(scrollAreaWidgetContents_2);
         label_25->setObjectName(QString::fromUtf8("label_25"));
-        sizePolicy1.setHeightForWidth(label_25->sizePolicy().hasHeightForWidth());
-        label_25->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(label_25->sizePolicy().hasHeightForWidth());
+        label_25->setSizePolicy(sizePolicy2);
 
-        verticalLayout->addWidget(label_25);
+        verticalLayout_2->addWidget(label_25);
 
-        label = new QLabel(groupBox);
+        label = new QLabel(scrollAreaWidgetContents_2);
         label->setObjectName(QString::fromUtf8("label"));
-        sizePolicy1.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
-        label->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
+        label->setSizePolicy(sizePolicy2);
 
-        verticalLayout->addWidget(label);
+        verticalLayout_2->addWidget(label);
 
-        redSlider = new QSlider(groupBox);
+        redSlider = new QSlider(scrollAreaWidgetContents_2);
         redSlider->setObjectName(QString::fromUtf8("redSlider"));
         redSlider->setMaximum(255);
         redSlider->setValue(0);
         redSlider->setOrientation(Qt::Horizontal);
 
-        verticalLayout->addWidget(redSlider);
+        verticalLayout_2->addWidget(redSlider);
 
-        label_2 = new QLabel(groupBox);
+        label_2 = new QLabel(scrollAreaWidgetContents_2);
         label_2->setObjectName(QString::fromUtf8("label_2"));
-        sizePolicy1.setHeightForWidth(label_2->sizePolicy().hasHeightForWidth());
-        label_2->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(label_2->sizePolicy().hasHeightForWidth());
+        label_2->setSizePolicy(sizePolicy2);
 
-        verticalLayout->addWidget(label_2);
+        verticalLayout_2->addWidget(label_2);
 
-        greenSlider = new QSlider(groupBox);
+        greenSlider = new QSlider(scrollAreaWidgetContents_2);
         greenSlider->setObjectName(QString::fromUtf8("greenSlider"));
         greenSlider->setMaximum(255);
         greenSlider->setValue(0);
         greenSlider->setOrientation(Qt::Horizontal);
 
-        verticalLayout->addWidget(greenSlider);
+        verticalLayout_2->addWidget(greenSlider);
 
-        label_3 = new QLabel(groupBox);
+        label_3 = new QLabel(scrollAreaWidgetContents_2);
         label_3->setObjectName(QString::fromUtf8("label_3"));
-        sizePolicy1.setHeightForWidth(label_3->sizePolicy().hasHeightForWidth());
-        label_3->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(label_3->sizePolicy().hasHeightForWidth());
+        label_3->setSizePolicy(sizePolicy2);
 
-        verticalLayout->addWidget(label_3);
+        verticalLayout_2->addWidget(label_3);
 
-        blueSlider = new QSlider(groupBox);
+        blueSlider = new QSlider(scrollAreaWidgetContents_2);
         blueSlider->setObjectName(QString::fromUtf8("blueSlider"));
         blueSlider->setMaximum(255);
         blueSlider->setValue(0);
         blueSlider->setOrientation(Qt::Horizontal);
 
-        verticalLayout->addWidget(blueSlider);
+        verticalLayout_2->addWidget(blueSlider);
 
+        scrollArea->setWidget(scrollAreaWidgetContents_2);
 
-        gridLayout->addWidget(groupBox, 0, 0, 1, 1);
+        gridLayout->addWidget(scrollArea, 0, 0, 2, 1);
 
-        horizontalSpacer = new QSpacerItem(900, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+        horizontalSpacer = new QSpacerItem(775, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         gridLayout->addItem(horizontalSpacer, 0, 1, 1, 1);
 
@@ -277,8 +317,11 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Particle System GUI", nullptr));
-        groupBox->setTitle(QCoreApplication::translate("MainWindow", "Emitter Controls", nullptr));
+        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Particle System", nullptr));
+        label_6->setText(QCoreApplication::translate("MainWindow", "EMITTER CONTROLS", nullptr));
+        label_4->setText(QCoreApplication::translate("MainWindow", "Keys:", nullptr));
+        label_5->setText(QCoreApplication::translate("MainWindow", "esc - close | space - reset view", nullptr));
+        label_7->setText(QCoreApplication::translate("MainWindow", "1 to 4 - toggle emitter visibilty ", nullptr));
 #if QT_CONFIG(tooltip)
         editEmitter1CheckBox->setToolTip(QCoreApplication::translate("MainWindow", "check to edit first emmitter", nullptr));
 #endif // QT_CONFIG(tooltip)

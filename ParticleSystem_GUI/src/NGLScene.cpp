@@ -19,6 +19,7 @@ NGLScene::NGLScene(size_t _numParticles, QWidget *_parent) : QOpenGLWidget(_pare
 
 NGLScene::~NGLScene()
 {
+  //when the program is closed
   std::cout<<"Shutting down NGL, removing VAO's and Shaders\n";
 }
 
@@ -30,22 +31,28 @@ void NGLScene::resizeGL(int _w , int _h)
   m_project = ngl::perspective(45.0f, static_cast<float>(_w)/_h, 0.1f, 300.0f);
 }
 
+void NGLScene::toggleEmitter1()
+{
+    //toggle on the first emitter to true
+    m_emitter1Visibility ^= true;
+}
+
 void NGLScene::toggleEmitter2()
 {
     //toggle on the second emitter to true
-    m_emitter2Visibilty ^= true;
+    m_emitter2Visibility ^= true;
 }
 
 void NGLScene::toggleEmitter3()
 {
-    //toggle on the second emitter to true
-    m_emitter3Toggle ^= true;
+    //toggle on the third emitter to true
+    m_emitter3Visibility ^= true;
 }
 
 void NGLScene::toggleEmitter4()
 {
-    //toggle on the second emitter to true
-    m_emitter4Toggle ^= true;
+    //toggle on the fourth emitter to true
+    m_emitter4Visibility ^= true;
 }
 
 void NGLScene::initializeGL()
@@ -93,7 +100,7 @@ void NGLScene::initializeGL()
   //set light colour, named lightDiffuse - This takes and alpha parameter, set to 1.0f here
   shader->setUniform("lightDiffuse", 1.0f, 1.0f, 1.0f, 1.0f);
   //set our check size, bigger the number the smaller the checks' size
-  shader->setUniform("checkSize", 20.0f);
+  shader->setUniform("checkSize", 30.0f);
   //our check shader is on
   shader->setUniform("checkOn", true);
   //set the two colours for our checks - has an alpha parameter
@@ -101,8 +108,8 @@ void NGLScene::initializeGL()
   shader->setUniform("colour2", 0.6f, 0.6f, 0.6f, 1.0f);
   //set our normal matrix
   shader->setUniform("normalMatrix", ngl::Mat3());
-  //trigger a timer every 10 seconds
-  startTimer(1);
+  //trigger a timer
+  startTimer(0);
   //set our previous time based on current time, which we get from now()
   m_previousTime = std::chrono::high_resolution_clock::now();
 }
@@ -122,24 +129,28 @@ void NGLScene::paintGL()
   //two spins that come directly from the mouse
   xrot.rotateX(m_win.spinXFace);
   yrot.rotateY(m_win.spinYFace);
-
+  //calculate global mouse translation
   m_globalMouseTX = yrot * xrot;
   //assign values to our global mouse translation matrix
   m_globalMouseTX.m_m[3][0] = m_modelPos.m_x;
   m_globalMouseTX.m_m[3][1] = m_modelPos.m_y;
   m_globalMouseTX.m_m[3][2] = m_modelPos.m_z;
-  //set point size for emitter 1 particles
-  glPointSize(m_particleSize1);
   //set our particle shader for ouur particles
   shader->use("ParticleShader");
   //transformation that we use in the shader
   shader->setUniform("MVP", m_project * m_view * m_globalMouseTX);
-  //set the particles' colour for emitter1
-  shader->setUniform("particleColour", m_red1, m_green1, m_blue1);
-  //call the draw method of the emitter
-  m_emitter_1->draw();
+  //if first emitter is toggled draw it
+  if (m_emitter1Visibility)
+  {
+      //set point size for emitter 1 particles
+      glPointSize(m_particleSize1);
+      //set the particles' colour for emitter1
+      shader->setUniform("particleColour", m_red1, m_green1, m_blue1);
+      //call the draw method of the emitter
+      m_emitter_1->draw();
+  }
   //if second emitter is toggled draw it
-  if (m_emitter2Visibilty)
+  if (m_emitter2Visibility)
   {
       //set point size for emitter 2 particles
       glPointSize(m_particleSize2);
@@ -149,7 +160,7 @@ void NGLScene::paintGL()
       m_emitter_2->draw();
   }
   //if third emitter is toggled draw it
-  if (m_emitter3Toggle)
+  if (m_emitter3Visibility)
   {
       //set point size for emitter 3 particles
       glPointSize(m_particleSize3);
@@ -159,7 +170,7 @@ void NGLScene::paintGL()
       m_emitter_3->draw();
   }
   //if fourth emitter is toggled draw it
-  if (m_emitter4Toggle)
+  if (m_emitter4Visibility)
   {
       //set point size for emitter 4 particles
       glPointSize(m_particleSize4);
@@ -168,56 +179,12 @@ void NGLScene::paintGL()
       //call the draw method of the emitter
       m_emitter_4->draw();
   }
-  //set our ground plane check shader for our ground plane
+  //set our check shader for our ground plane
   shader->use(ngl::nglCheckerShader);
   //every frame we need to reset our MVP for both the particles and the ground
   shader->setUniform("MVP", m_project * m_view * m_globalMouseTX);
   //draw the ground plane
   ngl::VAOPrimitives::instance()->draw("ground");
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-void NGLScene::keyPressEvent(QKeyEvent *_event)
-{
-  //set constant value for the movement of the emitter
-  constexpr float move = 0.5f;
-  // this method is called every time the main window recives a key event.
-  // we then switch on the key value and set the camera in the GLWindow
-  switch (_event->key())
-  {
-      // escape key to quite
-      case Qt::Key_Escape : QGuiApplication::exit(EXIT_SUCCESS); break;
-      case Qt::Key_Space :
-          m_win.spinXFace=0;
-          m_win.spinYFace=0;
-          m_modelPos.set(ngl::Vec3::zero());
-
-      break;
-      //using up,down,left & right keys on keyboard
-      case Qt::Key_D: m_emitter_1->left(move); break;
-      case Qt::Key_A: m_emitter_1->right(move); break;
-      case Qt::Key_W: m_emitter_1->up(move); break;
-      case Qt::Key_S: m_emitter_1->down(move); break;
-      case Qt::Key_Z: m_emitter_1->in(move); break;
-      case Qt::Key_X: m_emitter_1->out(move); break;
-      //case Qt::Key_Q: m_emitter_1->addParticles(); m_emitter_2->addParticles(); break;
-      //case Qt::Key_R: m_emitter_1->removeParticles(); m_emitter_2->removeParticles(); break;
-      //case Qt::Key_C: m_emitter_1->clearParticles(); m_emitter_2->clearParticles(); break;
-      //case Qt::Key_T: m_emitter_1->resetSystem(); m_emitter_2->resetSystem(); break;
-      case Qt::Key_Y: m_emitter_1->toggleSingleShot(); m_emitter_2->toggleSingleShot(); break;
-      //decrease spread
-      //case Qt::Key_7: spread -= 0.1f; m_emitter_1->changeSpread(spread); break;
-      //increase spread
-      //case Qt::Key_8: spread += 0.1f; m_emitter_1->changeSpread(spread); break;
-      //toggle extra emitters
-      case Qt::Key_2: toggleEmitter2(); std::cout << "emitter 2 on \n "; break;
-      case Qt::Key_3: toggleEmitter3(); std::cout << "emitter 3 on \n "; break;
-      case Qt::Key_4: toggleEmitter4(); std::cout << "emitter 4 on \n "; break;
-      default : break;
-  }
-  // finally update the GLWindow and re-draw
-  update();
 }
 
 void NGLScene::timerEvent(QTimerEvent *)
@@ -226,16 +193,10 @@ void NGLScene::timerEvent(QTimerEvent *)
     auto currentTime = std::chrono::high_resolution_clock::now();
     //calculate the time difference between our currentTime and our previousTime - delta in floating point value
     auto delta = std::chrono::duration<float, std::chrono::seconds::period> (currentTime - m_previousTime).count();
-    //std::cout << "delta time" << delta << '\n';
-    //for every particle add 10 particles so as to maintain a constant stream of particles
-    //m_numParticles += 10;
-    //call the update method from the emitter
+    //for each emitter call the update method from the emitter class
     m_emitter_1->update(delta, m_gravity1, m_numParticles1, m_spread1);
-    //call the update method from the emitter
     m_emitter_2->update(delta, m_gravity2, m_numParticles2, m_spread2);
-    //call the update method from the emitter
     m_emitter_3->update(delta, m_gravity3, m_numParticles3, m_spread3);
-    //call the update method from the emitter
     m_emitter_4->update(delta, m_gravity4, m_numParticles4, m_spread4);
     //call the draw function for NGL
     update();
@@ -281,21 +242,18 @@ void NGLScene::setGravity(int _gravityY)
     if (m_emitter2Edit)
     {
         m_gravity2 = _gravityY;
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 3
     if (m_emitter3Edit)
     {
         m_gravity3 = _gravityY;
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 4
     if (m_emitter4Edit)
     {
         m_gravity4 = _gravityY;
-        //tell the UI that it needs to be updated
         update();
     }
 }
@@ -308,31 +266,30 @@ void NGLScene::setNumParticles(int _numParticles)
     {
         //get updated number of particles
         m_numParticles1 = _numParticles;
+        //reset the emitter with the updated number of particles
+        m_emitter_1->resetEmitter(m_numParticles1, m_spread1);
         //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 2
     if (m_emitter2Edit)
     {
-        //get updated number of particles
         m_numParticles2 = _numParticles;
-        //tell the UI that it needs to be updated
+        m_emitter_2->resetEmitter(m_numParticles2, m_spread2);
         update();
     }
     //edit emitter 3
     if (m_emitter3Edit)
     {
-        //get updated number of particles
         m_numParticles3 = _numParticles;
-        //tell the UI that it needs to be updated
+        m_emitter_3->resetEmitter(m_numParticles3, m_spread3);
         update();
     }
     //edit emitter 4
     if (m_emitter4Edit)
     {
-        //get updated number of particles
         m_numParticles4 = _numParticles;
-        //tell the UI that it needs to be updated
+        m_emitter_4->resetEmitter(m_numParticles4, m_spread4);
         update();
     }
 }
@@ -341,7 +298,7 @@ void NGLScene::setParticleSize(int _particleSize)
 {
     //if loop depending on chosen emitters to edit
     //edit emitter 1
-    if (m_emitter2Edit)
+    if (m_emitter1Edit)
     {
         //get updated particle size
         m_particleSize1 = _particleSize;
@@ -351,25 +308,19 @@ void NGLScene::setParticleSize(int _particleSize)
     //edit emitter 2
     if (m_emitter2Edit)
     {
-        //get updated particle size
         m_particleSize2 = _particleSize;
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 3
     if (m_emitter3Edit)
     {
-        //get updated particle size
         m_particleSize3 = _particleSize;
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 4
     if (m_emitter4Edit)
     {
-        //get updated particle size
         m_particleSize4 = _particleSize;
-        //tell the UI that it needs to be updated
         update();
     }
 }
@@ -388,32 +339,26 @@ void NGLScene::setSpread(int _spread)
     //edit emitter 2
     if (m_emitter2Edit)
     {
-        //get updated particle size
         m_spread2 = _spread;
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 3
     if (m_emitter3Edit)
     {
-        //get updated particle size
         m_spread3 = _spread;
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 4
     if (m_emitter4Edit)
     {
-        //get updated particle size
         m_spread4 = _spread;
-        //tell the UI that it needs to be updated
         update();
     }
 }
 
 void NGLScene::toggleSingleShot()
 {
-    //wire this into toggleSingleShot method in Emitter class
+    //wire this into toggleSingleShot method in the Emitter class
     //if loop depending on chosen emitters to edit
     //edit emitter 1
     if (m_emitter1Edit)
@@ -426,25 +371,19 @@ void NGLScene::toggleSingleShot()
     //edit emitter 2
     if(m_emitter2Edit)
     {
-        //single shot for emitter 2
         m_emitter_2->toggleSingleShot();
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 3
     if(m_emitter3Edit)
     {
-        //single shot for emitter 3
         m_emitter_3->toggleSingleShot();
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 4
     if(m_emitter4Edit)
     {
-        //single shot for emitter 4
         m_emitter_4->toggleSingleShot();
-        //tell the UI that it needs to be updated
         update();
     }
 }
@@ -464,25 +403,19 @@ void NGLScene::addParticles()
     //edit emitter 2
     if(m_emitter2Edit)
     {
-        //add particles to emitter 2
         m_emitter_2->addParticles(m_spread2);
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 3
     if(m_emitter3Edit)
     {
-        //add particles to emitter 3
         m_emitter_3->addParticles(m_spread3);
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 4
     if(m_emitter4Edit)
     {
-        //add particles to emitter 4
         m_emitter_4->addParticles(m_spread4);
-        //tell the UI that it needs to be updated
         update();
     }
 }
@@ -502,25 +435,19 @@ void NGLScene::removeParticles()
     //edit emitter 2
     if(m_emitter2Edit)
     {
-        //remove particles from emitter 2
         m_emitter_2->removeParticles();
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 3
     if(m_emitter3Edit)
     {
-        //remove particles from emitter 3
         m_emitter_3->removeParticles();
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 4
     if(m_emitter4Edit)
     {
-        //remove particles from emitter 4
         m_emitter_4->removeParticles();
-        //tell the UI that it needs to be updated
         update();
     }
 }
@@ -540,25 +467,19 @@ void NGLScene::clearParticles()
     //edit emitter 2
     if(m_emitter2Edit)
     {
-        //clear particles from emitter 2
         m_emitter_2->clearParticles();
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 3
     if(m_emitter3Edit)
     {
-        //clear particles from emitter 3
         m_emitter_3->clearParticles();
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 4
     if(m_emitter4Edit)
     {
-        //clear particles from emitter 4
         m_emitter_4->clearParticles();
-        //tell the UI that it needs to be updated
         update();
     }
 }
@@ -578,25 +499,19 @@ void NGLScene::resetEmitter()
     //edit emitter 2
     if(m_emitter2Edit)
     {
-        //reset emitter 2
         m_emitter_2->resetEmitter(m_numParticles2, m_spread2);
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 3
     if(m_emitter3Edit)
     {
-        //reset emitter 3
         m_emitter_3->resetEmitter(m_numParticles3, m_spread3);
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 4
     if(m_emitter4Edit)
     {
-        //reset emitter 4
         m_emitter_4->resetEmitter(m_numParticles4, m_spread4);
-        //tell the UI that it needs to be updated
         update();
     }
 }
@@ -617,31 +532,22 @@ void NGLScene::redValue(int _red)
     //edit emitter 2
     if(m_emitter2Edit)
     {
-        //cast the integer we get from the slider to a float
         m_red2 = static_cast<float>(_red);
-        //devide this float by 255 so that we get a float value between 0 and 1 to use as our rgb value
         m_red2 = m_red2/255.0f;
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 3
     if(m_emitter3Edit)
     {
-        //cast the integer we get from the slider to a float
         m_red3 = static_cast<float>(_red);
-        //devide this float by 255 so tha twe get a float value between 0 and 1 to use as our rgb value
         m_red3 = m_red3/255.0f;
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 4
     if(m_emitter4Edit)
     {
-        //cast the integer we get from the slider to a float
         m_red4 = static_cast<float>(_red);
-        //devide this float by 255 so that we get a float value between 0 and 1 to use as our rgb value
         m_red4 = m_red4/255.0f;
-        //tell the UI that it needs to be updated
         update();
     }
 }
@@ -662,31 +568,22 @@ void NGLScene::greenValue(int _green)
     //edit emitter 2
     if(m_emitter2Edit)
     {
-        //cast the integer we get from the slider to a float
         m_green2 = static_cast<float>(_green);
-        //devide this float by 255 so that we get a float value between 0 and 1 to use as our rgb value
         m_green2 = m_green2/255.0f;
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 3
     if(m_emitter3Edit)
     {
-        //cast the integer we get from the slider to a float
         m_green3 = static_cast<float>(_green);
-        //devide this float by 255 so tha twe get a float value between 0 and 1 to use as our rgb value
         m_green3 = m_green3/255.0f;
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 4
     if(m_emitter4Edit)
     {
-        //cast the integer we get from the slider to a float
         m_green4 = static_cast<float>(_green);
-        //devide this float by 255 so that we get a float value between 0 and 1 to use as our rgb value
         m_green4 = m_green4/255.0f;
-        //tell the UI that it needs to be updated
         update();
     }
 }
@@ -707,32 +604,187 @@ void NGLScene::blueValue(int _blue)
     //edit emitter 2
     if(m_emitter2Edit)
     {
-        //cast the integer we get from the slider to a float
         m_blue2 = static_cast<float>(_blue);
-        //devide this float by 255 so that we get a float value between 0 and 1 to use as our rgb value
         m_blue2 = m_blue2/255.0f;
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 3
     if(m_emitter3Edit)
     {
-        //cast the integer we get from the slider to a float
         m_blue3 = static_cast<float>(_blue);
-        //devide this float by 255 so tha twe get a float value between 0 and 1 to use as our rgb value
         m_blue3 = m_blue3/255.0f;
-        //tell the UI that it needs to be updated
         update();
     }
     //edit emitter 4
     if(m_emitter4Edit)
     {
-        //cast the integer we get from the slider to a float
         m_blue4 = static_cast<float>(_blue);
-        //devide this float by 255 so that we get a float value between 0 and 1 to use as our rgb value
         m_blue4 = m_blue4/255.0f;
-        //tell the UI that it needs to be updated
         update();
     }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//Mouse Controls
+
+void NGLScene::keyPressEvent(QKeyEvent *_event)
+{
+
+  //set constant value for the movement of the emitter
+  constexpr float move = 0.5f;
+  // this method is called every time the main window recives a key event.
+  // we then switch on the key value and set the camera in the GLWindow
+  switch (_event->key())
+  {
+      // escape key to quit
+      case Qt::Key_Escape : QGuiApplication::exit(EXIT_SUCCESS); break;
+      case Qt::Key_Space :
+          m_win.spinXFace=0;
+          m_win.spinYFace=0;
+          m_modelPos.set(ngl::Vec3::zero());
+
+      break;
+      //using up,down,left,right,I and O keys on keyboard to move the emitters around
+      case Qt::Key_Left:
+          //move emitter 1 to the left
+          if(m_emitter1Edit)
+          {
+            m_emitter_1->left(move);
+          }
+          //move emitter 2 to the left
+          if(m_emitter2Edit)
+          {
+            m_emitter_2->left(move);
+          }
+          //move emitter 3 to the left
+          if(m_emitter3Edit)
+          {
+            m_emitter_3->left(move);
+          }
+          //move emitter 4 to the left
+          if(m_emitter4Edit)
+          {
+            m_emitter_4->left(move);
+          }
+      break;
+      case Qt::Key_Right:
+          //move emitter 1 to the right
+          if(m_emitter1Edit)
+          {
+            m_emitter_1->right(move);
+          }
+          //move emitter 2 to the right
+          if(m_emitter2Edit)
+          {
+            m_emitter_2->right(move);
+          }
+          //move emitter 3 to the right
+          if(m_emitter3Edit)
+          {
+            m_emitter_3->right(move);
+          }
+          //move emitter 4 to the right
+          if(m_emitter4Edit)
+          {
+            m_emitter_4->right(move);
+          }
+      break;
+      case Qt::Key_Up:
+          //move emitter 1 up
+          if(m_emitter1Edit)
+          {
+            m_emitter_1->up(move);
+          }
+          //move emitter 2 up
+          if(m_emitter2Edit)
+          {
+            m_emitter_2->up(move);
+          }
+          //move emitter 3 up
+          if(m_emitter3Edit)
+          {
+            m_emitter_3->up(move);
+          }
+          //move emitter 4 up
+          if(m_emitter4Edit)
+          {
+            m_emitter_4->up(move);
+          }
+      break;
+      case Qt::Key_Down:
+          //move emitter 1 down
+          if(m_emitter1Edit)
+          {
+            m_emitter_1->down(move);
+          }
+          //move emitter 2 down
+          if(m_emitter2Edit)
+          {
+            m_emitter_2->down(move);
+          }
+          //move emitter 3 down
+          if(m_emitter3Edit)
+          {
+            m_emitter_3->down(move);
+          }
+          //move emitter 4 down
+          if(m_emitter4Edit)
+          {
+            m_emitter_4->down(move);
+          }
+      break;
+      case Qt::Key_I:
+          //move emitter 1 in
+          if(m_emitter1Edit)
+          {
+            m_emitter_1->in(move);
+          }
+          //move emitter 2 in
+          if(m_emitter2Edit)
+          {
+            m_emitter_2->in(move);
+          }
+          //move emitter 3 in
+          if(m_emitter3Edit)
+          {
+            m_emitter_3->in(move);
+          }
+          //move emitter 4 in
+          if(m_emitter4Edit)
+          {
+            m_emitter_4->in(move);
+          }
+      break;
+      case Qt::Key_O:
+          //move emitter 1 out
+          if(m_emitter1Edit)
+          {
+            m_emitter_1->out(move);
+          }
+          //move emitter 2 out
+          if(m_emitter2Edit)
+          {
+            m_emitter_2->out(move);
+          }
+          //move emitter 3 out
+          if(m_emitter3Edit)
+          {
+            m_emitter_3->out(move);
+          }
+          //move emitter 4 out
+          if(m_emitter4Edit)
+          {
+            m_emitter_4->out(move);
+          }
+      break;
+      //toggle visibilty of all four emitters on or off
+      case Qt::Key_1: toggleEmitter1(); std::cout << "emitter 1 on \n "; break;
+      case Qt::Key_2: toggleEmitter2(); std::cout << "emitter 2 on \n "; break;
+      case Qt::Key_3: toggleEmitter3(); std::cout << "emitter 3 on \n "; break;
+      case Qt::Key_4: toggleEmitter4(); std::cout << "emitter 4 on \n "; break;
+      default : break;
+  }
+  // finally update the GLWindow and re-draw
+  update();
 }
 

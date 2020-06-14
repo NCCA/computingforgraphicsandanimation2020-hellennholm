@@ -26,6 +26,7 @@ class NGLScene : public QOpenGLWidget
 {
   //declare macro Q_OBJECT which will signal the moc to harvest information from the header
   Q_OBJECT
+
   public:
     //--------------------------------------------------------------------------------------------------------------------------
     /// @brief ctor for our NGL drawing class
@@ -48,18 +49,29 @@ class NGLScene : public QOpenGLWidget
     void paintGL() override;
     //--------------------------------------------------------------------------------------------------------------------------
     /// @brief this is called everytime we resize the window
+    /// @param _w width of our window
+    /// @param _h height of the window
     //--------------------------------------------------------------------------------------------------------------------------
-    void resizeGL(int _w, int _h) override;
+    void resizeGL(int _w, int _h) override; 
     //--------------------------------------------------------------------------------------------------------------------------
-    /// @brief this method is called when second emitter is toggled on
+    /// @brief Qt Event called when a key is pressed
+    /// @param [in] _event the Qt event to query for size etc
+    //--------------------------------------------------------------------------------------------------------------------------
+    void keyPressEvent(QKeyEvent *_event) override;
+    //--------------------------------------------------------------------------------------------------------------------------
+    /// @brief this method is called when first emitter's visibility is toggled on/off
+    //--------------------------------------------------------------------------------------------------------------------------
+    void toggleEmitter1();
+    //--------------------------------------------------------------------------------------------------------------------------
+    /// @brief this method is called when second emitter's visibility is toggled on/off
     //--------------------------------------------------------------------------------------------------------------------------
     void toggleEmitter2();
     //--------------------------------------------------------------------------------------------------------------------------
-    /// @brief this method is called when third emitter is toggled on
+    /// @brief this method is called when third emitter's visibility is toggled on/off
     //--------------------------------------------------------------------------------------------------------------------------
     void toggleEmitter3();
     //--------------------------------------------------------------------------------------------------------------------------
-    /// @brief this method is called when fourth emitter is toggled on
+    /// @brief this method is called when fourth emitter's visibility is toggled on/off
     //--------------------------------------------------------------------------------------------------------------------------
     void toggleEmitter4();
 
@@ -134,12 +146,6 @@ public slots:
     void blueValue(int _blue);
 
 private:
-
-    //--------------------------------------------------------------------------------------------------------------------------
-    /// @brief Qt Event called when a key is pressed
-    /// @param [in] _event the Qt event to query for size etc
-    //--------------------------------------------------------------------------------------------------------------------------
-    void keyPressEvent(QKeyEvent *_event) override;
     //--------------------------------------------------------------------------------------------------------------------------
     /// @brief this method is called every time a mouse is moved
     /// @param _event the Qt Event structure
@@ -188,21 +194,23 @@ private:
     //emitter 4
     std::unique_ptr<Emitter> m_emitter_4;
     //parameter for the number of particles emitted from emitter 1
-    size_t m_numParticles1 = 10;
+    size_t m_numParticles1 = 1000;
     //parameter for the number of particles emitted from emitter 2
-    size_t m_numParticles2 = 10;
+    size_t m_numParticles2 = 1000;
     //parameter for the number of particles emitted from emitter 3
-    size_t m_numParticles3 = 10;
+    size_t m_numParticles3 = 1000;
     //parameter for the number of particles emitted from emitter 4
-    size_t m_numParticles4 = 10;
+    size_t m_numParticles4 = 1000;
     //attribute to record the previous time
     std::chrono::high_resolution_clock::time_point m_previousTime;
-    //triggering a second emitter, default set to false
-    bool m_emitter2Visibilty = true;
-    //triggering a third emitter, default set to false
-    bool m_emitter3Toggle = true;
-    //triggering a fourth emitter, default set to false
-    bool m_emitter4Toggle = true;
+    //triggering the visibilty of a first emitter, default set to true
+    bool m_emitter1Visibility = true;
+    //triggering the visibilty of a second emitter, default set to false
+    bool m_emitter2Visibility = false;
+    //triggering the visibilty of a third emitter, default set to false
+    bool m_emitter3Visibility = false;
+    //triggering the visibilty of a fourth emitter, default set to false
+    bool m_emitter4Visibility = false;
     //value allowing editabilty of first emitter, default set to false
     bool m_emitter1Edit = true;
     //value allowing editabilty of second emitter, default set to false

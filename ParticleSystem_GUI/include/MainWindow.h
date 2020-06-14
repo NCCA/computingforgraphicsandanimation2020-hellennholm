@@ -14,17 +14,45 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief ctor for our Main Window class
+    /// @param [in] parent the parent window to the class
+    //----------------------------------------------------------------------------------------------------------------------
     MainWindow(QWidget *parent = nullptr);
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief dtor for our MainWindow class
+    //----------------------------------------------------------------------------------------------------------------------
     ~MainWindow();
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief Qt Event called when a key is pressed
+    /// @param [in] _event the Qt event to query for size etc
+    //----------------------------------------------------------------------------------------------------------------------
+    void keyPressEvent(QKeyEvent *_event);
 
 private slots:
+    //--------------------------------------------------------------------------------------------------------------------------
+    /// @brief this method is called to check whether the check box to edit emitter 1 is checked or not
+    //--------------------------------------------------------------------------------------------------------------------------
     void editEmitter1CheckBox_clicked();
+    //--------------------------------------------------------------------------------------------------------------------------
+    /// @brief this method is called to check whether the check box to edit emitter 2 is checked or not
+    //--------------------------------------------------------------------------------------------------------------------------
     void editEmitter2CheckBox_clicked();
+    //--------------------------------------------------------------------------------------------------------------------------
+    /// @brief this method is called to check whether the check box to edit emitter 3 is checked or not
+    //--------------------------------------------------------------------------------------------------------------------------
     void editEmitter3CheckBox_clicked();
+    //--------------------------------------------------------------------------------------------------------------------------
+    /// @brief this method is called to check whether the check box to edit emitter 4 is checked or not
+    //--------------------------------------------------------------------------------------------------------------------------
     void editEmitter4CheckBox_clicked();
+    //--------------------------------------------------------------------------------------------------------------------------
+    /// @brief this method is called to check whether the check box to toggle on and off the single shot is checked or not
+    //--------------------------------------------------------------------------------------------------------------------------
     void singleShotCheckBox_clicked();
 
 private:
+    //pointer to our ui
     Ui::MainWindow *ui;
     //pointer to our scene object
     NGLScene *m_gl;
